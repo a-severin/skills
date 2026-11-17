@@ -8,6 +8,11 @@ description: Audits and hardens a test suite by finding redundant tests to delet
 Analysis-and-cleanup workflow for an existing test suite. The output is an evidence-backed report
 plus a reviewed change plan, then edits.
 
+**Bundled reference:** [`references/SHARED-CONTAINER-FIXTURE.md`](references/SHARED-CONTAINER-FIXTURE.md)
+— a concrete **.NET / C# / xUnit v3 / Testcontainers** recipe for rung 2. Read it when the suite boots
+containerised databases per test unit: it holds the full fixture implementation, the granularity trap,
+and the failure modes. Adapt the naming and the migrator entry point; the structure transfers as-is.
+
 ## When to use
 
 - A test suite is slow, flaky, or has grown to the point nobody trusts it.
@@ -101,10 +106,15 @@ Apply this ladder **in order** and stop at the first rung that removes the cost:
 
 1. **Data variants → one parameterized test.** If one method repeats with different inputs and identical
    assertions, collapse to the framework's data-driven form. Lossless: same paths, less code.
-2. **Per-class prep → shared collection/assembly fixture.** If several classes boot the same
-   infrastructure from identical setup, hoist the boot into a shared fixture joined by every class.
-   Lossless: boots once, coverage unchanged. **This is usually the whole win — prefer it over touching
-   test methods at all.**
+2. **Per-unit prep → one shared assembly-level fixture.** If several classes boot the same
+   infrastructure from identical setup, hoist the boot into a single shared fixture and give each unit
+   its own **isolated database, schema, or namespace** instead of its own server.
+   **This is usually the whole win — prefer it over touching test methods at all.**
+   Lossless **only if the existing isolation granularity is preserved**. Measure whether prep is really
+   per-class or (common, and easy to misread) per test method before choosing the isolation unit: a
+   wrong choice causes apparently random failures, because frameworks give no ordering guarantee.
+   For .NET/C#/xUnit v3 suites, the ready-made implementation is in
+   [`references/SHARED-CONTAINER-FIXTURE.md`](references/SHARED-CONTAINER-FIXTURE.md).
 3. **Prep repeated inside one class → lifecycle hook.** Move boot out of each method into the class
    setup hook, and reset state between tests instead of rebuilding the world.
 4. **Sequential steps of one workflow → one method.** Only after 1–3. Combine steps that must run in
@@ -174,8 +184,11 @@ Get approval before applying.
 - **Merging is the last resort, not the first.** A shared fixture usually removes the cost with zero
   coverage risk. Jump to rung 2 before touching a single test method.
 - **Shared fixtures leak state.** One fixture across many tests means leftovers reach the next test.
-  When hoisting, add explicit per-test reset/seed or you trade runtime for flakiness — verify the suite
-  passes repeatedly, not just once.
+  The safe remedy is to preserve the original isolation granularity — a separate database, schema, or
+  namespace per unit — not to bolt resets onto tests that never needed them, which changes behaviour
+  for any test relying on in-class state. Verify with two consecutive full runs, not one. Failure modes,
+  including the per-unique-database connection-pool trap (`53300: sorry, too many clients already`):
+  [`references/SHARED-CONTAINER-FIXTURE.md`](references/SHARED-CONTAINER-FIXTURE.md).
 - **A merge that hides which step failed is a downgrade.** Reviewers lose the ability to localize a
   regression; that cost is often higher than the seconds saved.
 - **Framework filter syntax is not portable.** Filter flags, exit codes for "no tests matched", and
