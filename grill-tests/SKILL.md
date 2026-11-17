@@ -1,6 +1,20 @@
 ---
 name: grill-tests
-description: Audits and hardens a test suite by finding redundant tests to delete, consolidating heavy integration tests that boot containers or app hosts, and reporting duplicated test helpers with concrete extraction options. Use when asked to "grill tests", "audit tests", "clean up tests", "find redundant tests", "reduce test time", "speed up slow tests", "consolidate integration tests", "Testcontainers fixture is slow", "duplicated test code", "extract test helpers", or "is this test suite healthy". Produces an analysis report and an approval-gated change plan before editing; never deletes a test without naming the test that still covers the behavior.
+description: >-
+  Audits and hardens a test suite by finding redundant tests to delete,
+  consolidating heavy integration tests that boot containers or app hosts, and
+  reporting duplicated test helpers with concrete extraction options. Use when
+  asked to "grill tests", "audit tests", "clean up tests", "find redundant
+  tests", "reduce test time", "speed up slow tests", "consolidate integration
+  tests", "Testcontainers fixture is slow", "duplicated test code", "extract
+  test helpers", or "is this test suite healthy". Produces an analysis report
+  and an approval-gated change plan before editing; never deletes a test without
+  naming the test that still covers the behavior.
+modeSlugs:
+  - architect
+  - code
+  - project-research
+  - orchestrator
 ---
 
 # Grilling the test suite

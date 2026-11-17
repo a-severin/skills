@@ -1,13 +1,18 @@
 ---
 name: grill-adr
 description: >
-  Write the outcome of the current working session as an Architecture Decision Record in docs/adr,
-  following the repository's existing ADR template, numbering, and language. Mines the session
-  (working-tree diff, new files, rejected alternatives, defects found during implementation) for
-  context, evaluated options, the decision, consequences, and code references. Use when the user
-  says "write an ADR", "record this decision", "/grill-adr", "document why we did this", "capture
-  this session as an ADR", or asks for an architecture decision record after an implementation.
-  Do NOT use for specs, design docs, changelogs, or commit messages.
+  Write the outcome of the current working session as an Architecture Decision
+  Record in docs/adr, following the repository's existing ADR template,
+  numbering, and language. Mines the session (working-tree diff, new files,
+  rejected alternatives, defects found during implementation) for context,
+  evaluated options, the decision, consequences, and code references. Use when
+  the user says "write an ADR", "record this decision", "/grill-adr", "document
+  why we did this", "capture this session as an ADR", or asks for an
+  architecture decision record after an implementation. Do NOT use for specs,
+  design docs, changelogs, or commit messages.
+modeSlugs:
+  - documentation-writer
+  - orchestrator
 ---
 
 # grill-adr
